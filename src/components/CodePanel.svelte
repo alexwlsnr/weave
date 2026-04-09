@@ -1,42 +1,98 @@
+<!-- src/components/CodePanel.svelte -->
 <script lang="ts">
   import { store } from '../store.svelte'
   import { generateProjectCode } from '../engine/codegen'
 
   let code = $derived(generateProjectCode(store.cards))
-  let collapsed = $state(false)
+  let expanded = $state(false)
+
+  let gutterColor = $derived(
+    store.codeStatus === 'error'   ? 'var(--red)'   :
+    store.codeStatus === 'pending' ? 'var(--amber)'  :
+                                     'var(--accent)'
+  )
 
   function copyCode() {
     navigator.clipboard.writeText(code)
   }
+
+  // First non-empty line for the collapsed preview
+  let previewLine = $derived(code.split('\n').find(l => l.trim()) ?? code)
 </script>
 
-<div class="border-t border-gray-800 bg-gray-900 transition-all {collapsed ? 'h-8' : 'h-48'}">
-  <div class="flex items-center gap-2 border-b border-gray-800 px-3 py-1.5">
-    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Generated Code</span>
-    <span class="ml-1 text-[10px] text-gray-600">
-      (paste into <a href="https://strudel.cc" target="_blank" rel="noreferrer" class="text-violet-500 hover:text-violet-400">strudel.cc</a> REPL)
-    </span>
-    <div class="ml-auto flex items-center gap-2">
-      {#if !collapsed && code !== 'silence()'}
-        <button
-          onclick={copyCode}
-          class="text-[10px] text-gray-500 hover:text-violet-400 transition-colors"
-        >
-          copy
-        </button>
+<div style="
+  display:flex;flex-direction:column;
+  border-top:1px solid var(--border-subtle);
+  background:var(--surface-2);
+  flex-shrink:0;
+  transition:height 0.2s ease;
+  height:{expanded ? '160px' : '36px'};
+  overflow:hidden;
+">
+  <!-- Collapsed bar — always visible, click to toggle -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    onclick={() => (expanded = !expanded)}
+    style="
+      display:flex;align-items:stretch;height:36px;cursor:pointer;flex-shrink:0;
+    "
+  >
+    <!-- Status gutter -->
+    <div style="width:4px;background:{gutterColor};transition:background 0.3s;flex-shrink:0"></div>
+
+    <!-- Content row -->
+    <div style="
+      flex:1;display:flex;align-items:center;gap:10px;
+      padding:0 10px;overflow:hidden;
+    ">
+      <span style="font-family:monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);flex-shrink:0;text-transform:uppercase">
+        Code
+      </span>
+      <span style="
+        font-family:monospace;font-size:10px;color:{gutterColor};
+        flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+        transition:color 0.3s;
+      ">{previewLine}</span>
+      {#if store.codeStatus === 'pending'}
+        <span style="font-family:monospace;font-size:9px;color:var(--amber);flex-shrink:0">● pending</span>
+      {:else if store.codeStatus === 'error'}
+        <span style="font-family:monospace;font-size:9px;color:var(--red);flex-shrink:0">● error</span>
       {/if}
       <button
-        onclick={() => (collapsed = !collapsed)}
-        class="text-[10px] text-gray-500 hover:text-white"
-      >
-        {collapsed ? '▲' : '▼'}
-      </button>
+        onclick={(e) => { e.stopPropagation(); copyCode() }}
+        style="
+          font-family:monospace;font-size:9px;color:var(--text-dim);
+          background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;
+        "
+        onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}
+        onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
+      >copy</button>
+      <span style="font-family:monospace;font-size:9px;color:var(--text-dim);flex-shrink:0">
+        {expanded ? '▼' : '▲'}
+      </span>
     </div>
   </div>
 
-  {#if !collapsed}
-    <div class="h-full overflow-auto px-3 py-2">
-      <pre class="font-mono text-[11px] text-emerald-400 leading-relaxed whitespace-pre-wrap">{code}</pre>
+  <!-- Expanded code block -->
+  {#if expanded}
+    <div style="flex:1;overflow:auto;padding:8px 14px 8px 14px;border-top:1px solid var(--border-subtle)">
+      <pre style="
+        margin:0;font-family:monospace;font-size:10px;
+        color:{gutterColor};line-height:1.7;white-space:pre-wrap;
+        transition:color 0.3s;
+      ">{code}</pre>
+      <a
+        href="https://strudel.cc"
+        target="_blank"
+        rel="noreferrer"
+        style="
+          display:inline-block;margin-top:8px;
+          font-family:monospace;font-size:9px;
+          color:var(--text-dim);text-decoration:none;letter-spacing:1px;
+        "
+        onclick={(e) => e.stopPropagation()}
+      >try at strudel.cc ↗</a>
     </div>
   {/if}
 </div>
