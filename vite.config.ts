@@ -9,5 +9,8 @@ export default defineConfig({
   ],
   optimizeDeps: {
     exclude: ['@strudel/web']
+  },
+  server: {
+    allowedHosts: ['portainer-bmc.tail8996ce.ts.net']
   }
 })
