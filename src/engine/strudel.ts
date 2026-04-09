@@ -1,10 +1,15 @@
-import { initStrudel } from '@strudel/web'
+import { initStrudel, samples } from '@strudel/web'
 
 let ready = false
 
 export async function init(): Promise<void> {
   if (ready) return
-  await initStrudel()
+  await initStrudel({
+    prebake: async () => {
+      // Load the dirt-samples library (bd, sd, hh, cp, etc.)
+      await samples('github:tidalcycles/dirt-samples')
+    },
+  })
   ready = true
 }
 
