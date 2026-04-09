@@ -1,1 +1,79 @@
+/* src/app.css */
 @import "tailwindcss";
+
+:root {
+  /* Surfaces */
+  --bg:        #050510;
+  --surface-1: #0d0520;
+  --surface-2: #080320;
+
+  /* Borders */
+  --border-subtle: #1a0535;
+  --border-active: #2d0a5e;
+
+  /* Accents */
+  --accent:        #7c3aed;
+  --accent-light:  #c084fc;
+  --accent-glow:   #9333ea;
+  --cyan:          #38bdf8;
+  --cyan-glow:     #0ea5e9;
+  --green:         #4ade80;
+  --green-glow:    #22c55e;
+  --amber:         #f59e0b;
+  --red:           #ef4444;
+
+  /* Text */
+  --text-primary:   #e0c0ff;
+  --text-secondary: #7040c0;
+  --text-dim:       #3d1060;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Glowing range slider thumb — used by modifier chips */
+input[type="range"].weave-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: var(--border-active);
+  border-radius: 1px;
+  cursor: pointer;
+  width: 32px;
+}
+input[type="range"].weave-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  box-shadow: 0 0 4px var(--accent-glow);
+  cursor: pointer;
+}
+input[type="range"].weave-slider::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  box-shadow: 0 0 4px var(--accent-glow);
+  border: none;
+  cursor: pointer;
+}
+/* Cyan variant for sd/lpf chips */
+input[type="range"].weave-slider-cyan::-webkit-slider-thumb {
+  background: var(--cyan);
+  box-shadow: 0 0 4px var(--cyan-glow);
+}
+input[type="range"].weave-slider-cyan::-moz-range-thumb {
+  background: var(--cyan);
+  box-shadow: 0 0 4px var(--cyan-glow);
+  border: none;
+}
