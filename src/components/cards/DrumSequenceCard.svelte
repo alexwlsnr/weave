@@ -64,21 +64,21 @@
   ondragover={onDragOver}
   ondrop={onDrop}
   style="
-    display:flex;flex-direction:column;gap:12px;
+    display:flex;flex-direction:column;gap:16px;
     border:1px solid #1e0848;border-radius:12px;
-    background:var(--surface-1);padding:14px;
+    background:var(--surface-1);padding:18px;
     min-width:fit-content;position:relative;
   "
 >
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:8px">
+  <div style="display:flex;align-items:center;gap:10px">
     <div style="
-      width:7px;height:7px;border-radius:50%;
+      width:9px;height:9px;border-radius:50%;
       background:var(--accent);
       box-shadow:0 0 8px var(--accent-glow);
       flex-shrink:0;
     "></div>
-    <span style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">
+    <span style="font-family:monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">
       Drum Sequence
     </span>
     <button
@@ -88,14 +88,14 @@
         border:1px solid {card.muted ? 'var(--border-subtle)' : 'var(--border-active)'};
         color:{card.muted ? 'var(--text-dim)' : 'var(--text-secondary)'};
         background:transparent;border-radius:20px;
-        padding:2px 8px;font-family:monospace;font-size:8px;cursor:pointer;
+        padding:3px 10px;font-family:monospace;font-size:11px;cursor:pointer;
       "
     >{card.muted ? 'muted' : 'active'}</button>
     <button
       onclick={() => removeCard(card.id)}
       style="
         background:none;border:none;
-        color:var(--text-dim);cursor:pointer;font-size:11px;padding:0;
+        color:var(--text-dim);cursor:pointer;font-size:14px;padding:0;
         transition:color 0.15s;
       "
       onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
@@ -106,8 +106,8 @@
   <!-- Step grid -->
   <div style="display:flex;flex-direction:column;gap:4px">
     {#each card.tracks as track, trackIdx}
-      <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-family:monospace;font-size:8px;color:var(--text-dim);width:16px;text-align:right;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-family:monospace;font-size:12px;color:var(--text-dim);width:20px;text-align:right;flex-shrink:0">
           {track.sound}
         </span>
         <div style="display:flex;align-items:center">
@@ -115,7 +115,7 @@
             <button
               onclick={() => toggleStep(trackIdx, stepIdx)}
               style="
-                width:18px;height:14px;border-radius:3px;border:none;cursor:pointer;
+                width:22px;height:18px;border-radius:3px;border:none;cursor:pointer;
                 transition:background 0.1s,box-shadow 0.1s;
                 {stepStyle(track.sound, on, stepIdx)}
               "
@@ -127,7 +127,7 @@
           onclick={() => removeTrack(trackIdx)}
           style="
             background:none;border:none;color:var(--text-dim);
-            cursor:pointer;font-size:10px;padding:0;transition:color 0.15s;
+            cursor:pointer;font-size:13px;padding:0;transition:color 0.15s;
           "
           onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
           onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
@@ -141,7 +141,7 @@
       onclick={addTrack}
       style="
         align-self:flex-start;background:none;border:none;
-        color:var(--text-dim);font-family:monospace;font-size:9px;
+        color:var(--text-dim);font-family:monospace;font-size:12px;
         cursor:pointer;padding:0;transition:color 0.15s;
       "
       onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}

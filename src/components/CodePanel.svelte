@@ -26,7 +26,7 @@
   background:var(--surface-2);
   flex-shrink:0;
   transition:height 0.2s ease;
-  height:{expanded ? '160px' : '36px'};
+  height:{expanded ? '200px' : '44px'};
   overflow:hidden;
 ">
   <!-- Collapsed bar — always visible, click to toggle -->
@@ -35,7 +35,7 @@
   <div
     onclick={() => (expanded = !expanded)}
     style="
-      display:flex;align-items:stretch;height:36px;cursor:pointer;flex-shrink:0;
+      display:flex;align-items:stretch;height:44px;cursor:pointer;flex-shrink:0;
     "
   >
     <!-- Status gutter -->
@@ -46,29 +46,29 @@
       flex:1;display:flex;align-items:center;gap:10px;
       padding:0 10px;overflow:hidden;
     ">
-      <span style="font-family:monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);flex-shrink:0;text-transform:uppercase">
+      <span style="font-family:monospace;font-size:12px;letter-spacing:2px;color:var(--text-dim);flex-shrink:0;text-transform:uppercase">
         Code
       </span>
       <span style="
-        font-family:monospace;font-size:10px;color:{gutterColor};
+        font-family:monospace;font-size:13px;color:{gutterColor};
         flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
         transition:color 0.3s;
       ">{previewLine}</span>
       {#if store.codeStatus === 'pending'}
-        <span style="font-family:monospace;font-size:9px;color:var(--amber);flex-shrink:0">● pending</span>
+        <span style="font-family:monospace;font-size:12px;color:var(--amber);flex-shrink:0">● pending</span>
       {:else if store.codeStatus === 'error'}
-        <span style="font-family:monospace;font-size:9px;color:var(--red);flex-shrink:0">● error</span>
+        <span style="font-family:monospace;font-size:12px;color:var(--red);flex-shrink:0">● error</span>
       {/if}
       <button
         onclick={(e) => { e.stopPropagation(); copyCode() }}
         style="
-          font-family:monospace;font-size:9px;color:var(--text-dim);
+          font-family:monospace;font-size:12px;color:var(--text-dim);
           background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;
         "
         onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}
         onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
       >copy</button>
-      <span style="font-family:monospace;font-size:9px;color:var(--text-dim);flex-shrink:0">
+      <span style="font-family:monospace;font-size:12px;color:var(--text-dim);flex-shrink:0">
         {expanded ? '▼' : '▲'}
       </span>
     </div>
@@ -78,7 +78,7 @@
   {#if expanded}
     <div style="flex:1;overflow:auto;padding:8px 14px 8px 14px;border-top:1px solid var(--border-subtle)">
       <pre style="
-        margin:0;font-family:monospace;font-size:10px;
+        margin:0;font-family:monospace;font-size:13px;
         color:{gutterColor};line-height:1.7;white-space:pre-wrap;
         transition:color 0.3s;
       ">{code}</pre>
@@ -88,7 +88,7 @@
         rel="noreferrer"
         style="
           display:inline-block;margin-top:8px;
-          font-family:monospace;font-size:9px;
+          font-family:monospace;font-size:12px;
           color:var(--text-dim);text-decoration:none;letter-spacing:1px;
         "
         onclick={(e) => e.stopPropagation()}

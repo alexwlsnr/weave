@@ -14,11 +14,11 @@
       height:100%;display:flex;flex-direction:column;
       align-items:center;justify-content:center;gap:8px;
     ">
-      <div style="font-family:monospace;font-size:11px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase">
+      <div style="font-family:monospace;font-size:14px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase">
         no cards
       </div>
       <div style="width:32px;height:1px;background:linear-gradient(to right,transparent,var(--border-active),transparent)"></div>
-      <div style="font-family:monospace;font-size:10px;color:var(--text-dim)">
+      <div style="font-family:monospace;font-size:13px;color:var(--text-dim)">
         add a card from the sidebar to start
       </div>
     </div>

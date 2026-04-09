@@ -80,18 +80,18 @@
   background:var(--surface-1);
   border-right:1px solid var(--border-subtle);
   display:flex;flex-direction:column;gap:0;
-  overflow-y:auto;padding:12px 10px;
+  overflow-y:auto;padding:16px 12px;
 ">
   <!-- Cards section -->
-  <div style="margin-bottom:16px">
-    <div style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">
+  <div style="margin-bottom:20px">
+    <div style="font-family:monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">
       Cards
     </div>
     <button onclick={addDrumCard} style="
       display:block;width:100%;text-align:left;
       background:transparent;border:1px solid var(--border-active);
-      color:var(--text-secondary);padding:6px 8px;border-radius:4px;
-      font-family:monospace;font-size:10px;cursor:pointer;
+      color:var(--text-secondary);padding:8px 10px;border-radius:4px;
+      font-family:monospace;font-size:13px;cursor:pointer;
       margin-bottom:4px;transition:border-color 0.15s,color 0.15s;
     "
     onmouseenter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)' }}
@@ -102,8 +102,8 @@
     <button onclick={addMelodyCard} style="
       display:block;width:100%;text-align:left;
       background:transparent;border:1px solid var(--border-active);
-      color:var(--text-secondary);padding:6px 8px;border-radius:4px;
-      font-family:monospace;font-size:10px;cursor:pointer;
+      color:var(--text-secondary);padding:8px 10px;border-radius:4px;
+      font-family:monospace;font-size:13px;cursor:pointer;
       transition:border-color 0.15s,color 0.15s;
     "
     onmouseenter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)' }}
@@ -114,11 +114,11 @@
   </div>
 
   <!-- Modifiers section -->
-  <div style="margin-bottom:16px">
-    <div style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">
+  <div style="margin-bottom:20px">
+    <div style="font-family:monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">
       Modifiers
     </div>
-    <div style="font-size:9px;color:var(--text-dim);margin-bottom:8px">drag onto a card</div>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px">drag onto a card</div>
     <div style="display:flex;flex-direction:column;gap:4px">
       {#each MODIFIERS as { label, color, mod }}
         <div
@@ -129,8 +129,8 @@
           style="
             border:1px solid {color}40;
             color:{color};
-            padding:4px 8px;border-radius:20px;
-            font-family:monospace;font-size:9px;
+            padding:6px 10px;border-radius:20px;
+            font-family:monospace;font-size:12px;
             cursor:grab;text-align:center;
             transition:background 0.15s;
           "
@@ -143,14 +143,14 @@
 
   <!-- Presets section -->
   <div>
-    <div style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">
+    <div style="font-family:monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">
       Presets
     </div>
     <button onclick={addFourOnFloor} style="
       display:block;width:100%;text-align:left;
       background:transparent;border:none;
-      color:var(--text-dim);padding:4px 0;
-      font-family:monospace;font-size:9px;cursor:pointer;
+      color:var(--text-dim);padding:6px 0;
+      font-family:monospace;font-size:12px;cursor:pointer;
       transition:color 0.15s;
     "
     onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}
@@ -159,8 +159,8 @@
     <button onclick={addCMajorArp} style="
       display:block;width:100%;text-align:left;
       background:transparent;border:none;
-      color:var(--text-dim);padding:4px 0;
-      font-family:monospace;font-size:9px;cursor:pointer;
+      color:var(--text-dim);padding:6px 0;
+      font-family:monospace;font-size:12px;cursor:pointer;
       transition:color 0.15s;
     "
     onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}

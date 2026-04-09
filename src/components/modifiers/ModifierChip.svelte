@@ -62,8 +62,8 @@
 <div style="
   display:inline-flex;align-items:center;gap:6px;
   border:1px solid {color}60;border-radius:20px;
-  padding:3px 8px;
-  font-family:monospace;font-size:9px;color:{color};
+  padding:4px 10px;
+  font-family:monospace;font-size:12px;color:{color};
 ">
   <span>{label()}</span>
   {#if hasSlider}
@@ -81,7 +81,7 @@
     onclick={onremove}
     style="
       background:none;border:none;padding:0;
-      color:{color}60;cursor:pointer;font-size:9px;line-height:1;
+      color:{color}60;cursor:pointer;font-size:12px;line-height:1;
       transition:color 0.15s;
     "
     onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = color}

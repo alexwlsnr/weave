@@ -28,14 +28,14 @@
 </script>
 
 <header style="
-  display:flex;align-items:center;gap:16px;
-  padding:0 16px;height:44px;
+  display:flex;align-items:center;gap:20px;
+  padding:0 16px;height:56px;
   background:var(--surface-2);
   border-bottom:1px solid var(--border-subtle);
   flex-shrink:0;
 ">
   <span style="
-    font-family:monospace;font-size:13px;font-weight:700;
+    font-family:monospace;font-size:16px;font-weight:700;
     letter-spacing:4px;color:var(--accent);
     text-shadow:0 0 12px var(--accent-glow);
   ">WEAVE</span>
@@ -48,8 +48,8 @@
         background:transparent;
         border:1px solid {store.isPlaying ? 'var(--border-subtle)' : 'var(--accent)'};
         color:{store.isPlaying ? 'var(--text-dim)' : 'var(--accent-light)'};
-        padding:4px 12px;border-radius:3px;
-        font-family:monospace;font-size:11px;letter-spacing:1px;
+        padding:6px 14px;border-radius:3px;
+        font-family:monospace;font-size:14px;letter-spacing:1px;
         cursor:{store.isPlaying ? 'default' : 'pointer'};
         text-shadow:{store.isPlaying ? 'none' : '0 0 6px var(--accent)'};
         transition:all 0.15s;
@@ -62,15 +62,15 @@
         background:transparent;
         border:1px solid {store.isPlaying ? 'var(--border-active)' : 'var(--border-subtle)'};
         color:{store.isPlaying ? 'var(--text-secondary)' : 'var(--text-dim)'};
-        padding:4px 12px;border-radius:3px;
-        font-family:monospace;font-size:11px;letter-spacing:1px;
+        padding:6px 14px;border-radius:3px;
+        font-family:monospace;font-size:14px;letter-spacing:1px;
         cursor:{store.isPlaying ? 'pointer' : 'default'};
         transition:all 0.15s;
       "
     >■ STOP</button>
   </div>
 
-  <label style="display:flex;align-items:center;gap:8px;font-family:monospace;font-size:11px;color:var(--text-dim)">
+  <label style="display:flex;align-items:center;gap:8px;font-family:monospace;font-size:14px;color:var(--text-dim)">
     BPM
     <input
       type="number"
@@ -79,17 +79,17 @@
       value={store.bpm}
       oninput={handleBpmChange}
       style="
-        width:52px;background:var(--surface-1);
+        width:60px;background:var(--surface-1);
         border:1px solid var(--border-active);
         color:var(--text-secondary);
         padding:3px 6px;border-radius:3px;
-        font-family:monospace;font-size:11px;
+        font-family:monospace;font-size:14px;
         text-align:center;outline:none;
       "
     />
   </label>
 
-  <div style="margin-left:auto;font-family:monospace;font-size:10px;color:var(--text-dim)">
+  <div style="margin-left:auto;font-family:monospace;font-size:13px;color:var(--text-dim)">
     {store.cards.length} {store.cards.length === 1 ? 'card' : 'cards'}
   </div>
 </header>

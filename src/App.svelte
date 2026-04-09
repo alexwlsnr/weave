@@ -54,10 +54,10 @@
       display:flex;flex-direction:column;align-items:center;justify-content:center;
       background:var(--bg);gap:12px
     ">
-      <div style="font-family:monospace;font-size:32px;font-weight:700;color:var(--accent);
+      <div style="font-family:monospace;font-size:44px;font-weight:700;color:var(--accent);
                   text-shadow:0 0 24px var(--accent-glow),0 0 48px var(--accent);
                   letter-spacing:6px">WEAVE</div>
-      <div style="font-size:12px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px">
+      <div style="font-size:15px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px">
         graphical pattern composer
       </div>
       <button
@@ -70,7 +70,7 @@
           padding:10px 32px;
           border-radius:4px;
           font-family:monospace;
-          font-size:13px;
+          font-size:16px;
           letter-spacing:2px;
           cursor:pointer;
           text-shadow:0 0 8px var(--accent);
@@ -82,7 +82,7 @@
         {loading ? 'LOADING...' : 'CLICK TO START'}
       </button>
       {#if initError}
-        <div style="color:var(--red);font-size:11px;margin-top:8px">{initError}</div>
+        <div style="color:var(--red);font-size:14px;margin-top:8px">{initError}</div>
       {/if}
     </div>
   {:else}
