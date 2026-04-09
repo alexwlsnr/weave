@@ -1,33 +1,29 @@
+<!-- src/components/cards/DrumSequenceCard.svelte -->
 <script lang="ts">
   import type { DrumSequenceCard } from '../../store.svelte'
-  import { store, removeCard, nextId } from '../../store.svelte'
+  import { removeCard, nextId } from '../../store.svelte'
   import { generateCardCode } from '../../engine/codegen'
   import DrumViz from '../../viz/DrumViz.svelte'
   import ModifierChip from '../modifiers/ModifierChip.svelte'
 
   let { card }: { card: DrumSequenceCard } = $props()
 
-  // Derived: regenerate code whenever tracks/modifiers change
   let code = $derived(generateCardCode(card))
 
-  const TRACK_COLORS: Record<string, string> = {
-    bd: 'bg-purple-500',
-    sd: 'bg-blue-500',
-    hh: 'bg-emerald-500',
-    oh: 'bg-amber-500',
-    cp: 'bg-red-500',
+  const STEP_COLOR: Record<string, { on: string; glow: string }> = {
+    bd: { on: 'var(--accent-light)', glow: 'var(--accent-glow)' },
+    sd: { on: 'var(--cyan)',         glow: 'var(--cyan-glow)' },
+    hh: { on: 'var(--green)',        glow: 'var(--green-glow)' },
+    oh: { on: 'var(--amber)',        glow: '#d97706' },
+    cp: { on: 'var(--red)',          glow: '#dc2626' },
   }
 
-  function stepColor(sound: string, on: boolean): string {
-    if (!on) return 'bg-gray-800 hover:bg-gray-700'
-    const map: Record<string, string> = {
-      bd: 'bg-purple-500 hover:bg-purple-400',
-      sd: 'bg-blue-500 hover:bg-blue-400',
-      hh: 'bg-emerald-500 hover:bg-emerald-400',
-      oh: 'bg-amber-500 hover:bg-amber-400',
-      cp: 'bg-red-500 hover:bg-red-400',
-    }
-    return map[sound] ?? 'bg-indigo-500 hover:bg-indigo-400'
+  function stepStyle(sound: string, on: boolean, stepIdx: number): string {
+    const c = STEP_COLOR[sound] ?? STEP_COLOR.bd
+    const marginLeft = (stepIdx % 4 === 0 && stepIdx > 0) ? 'margin-left:4px;' : ''
+    if (on) return `${marginLeft}background:${c.on};box-shadow:0 0 7px ${c.glow};`
+    const isQuarter = stepIdx % 4 === 0
+    return `${marginLeft}background:${isQuarter ? '#1c0d48' : '#160840'};`
   }
 
   function toggleStep(trackIdx: number, stepIdx: number) {
@@ -41,11 +37,8 @@
     card.tracks.push({ sound: next, steps: Array(card.stepCount).fill(false) })
   }
 
-  function removeTrack(idx: number) {
-    card.tracks.splice(idx, 1)
-  }
+  function removeTrack(idx: number) { card.tracks.splice(idx, 1) }
 
-  // Drag-over: accept modifier drops
   function onDragOver(e: DragEvent) {
     e.preventDefault()
     e.dataTransfer!.dropEffect = 'copy'
@@ -62,9 +55,7 @@
     } catch {}
   }
 
-  function removeModifier(idx: number) {
-    card.modifiers.splice(idx, 1)
-  }
+  function removeModifier(idx: number) { card.modifiers.splice(idx, 1) }
 </script>
 
 <div
@@ -72,72 +63,101 @@
   aria-label="Drum sequence card"
   ondragover={onDragOver}
   ondrop={onDrop}
-  class="flex flex-col gap-3 rounded-xl border border-gray-700 bg-gray-900 p-4 w-fit"
+  style="
+    display:flex;flex-direction:column;gap:12px;
+    border:1px solid #1e0848;border-radius:12px;
+    background:var(--surface-1);padding:14px;
+    min-width:fit-content;position:relative;
+  "
 >
   <!-- Header -->
-  <div class="flex items-center gap-2">
-    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Drum Sequence</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="
+      width:7px;height:7px;border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 8px var(--accent-glow);
+      flex-shrink:0;
+    "></div>
+    <span style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">
+      Drum Sequence
+    </span>
     <button
       onclick={() => (card.muted = !card.muted)}
-      class="ml-auto rounded px-2 py-0.5 text-xs {card.muted ? 'bg-gray-700 text-gray-400' : 'bg-violet-700 text-white'}"
-    >
-      {card.muted ? 'muted' : 'active'}
-    </button>
+      style="
+        margin-left:auto;
+        border:1px solid {card.muted ? 'var(--border-subtle)' : 'var(--border-active)'};
+        color:{card.muted ? 'var(--text-dim)' : 'var(--text-secondary)'};
+        background:transparent;border-radius:20px;
+        padding:2px 8px;font-family:monospace;font-size:8px;cursor:pointer;
+      "
+    >{card.muted ? 'muted' : 'active'}</button>
     <button
       onclick={() => removeCard(card.id)}
-      class="text-gray-500 hover:text-red-400 text-xs"
+      style="
+        background:none;border:none;
+        color:var(--text-dim);cursor:pointer;font-size:11px;padding:0;
+        transition:color 0.15s;
+      "
+      onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
+      onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
     >✕</button>
   </div>
 
-  <!-- Grid -->
-  <div class="flex flex-col gap-1.5">
+  <!-- Step grid -->
+  <div style="display:flex;flex-direction:column;gap:4px">
     {#each card.tracks as track, trackIdx}
-      <div class="flex items-center gap-1.5">
-        <!-- Sound label -->
-        <span class="w-7 text-right text-[10px] font-mono text-gray-500">{track.sound}</span>
-        <!-- Steps -->
-        <div class="flex gap-0.5">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-family:monospace;font-size:8px;color:var(--text-dim);width:16px;text-align:right;flex-shrink:0">
+          {track.sound}
+        </span>
+        <div style="display:flex;align-items:center">
           {#each track.steps as on, stepIdx}
             <button
               onclick={() => toggleStep(trackIdx, stepIdx)}
-              class="h-6 w-7 rounded-sm transition-colors {stepColor(track.sound, on)} {stepIdx % 4 === 0 ? 'ml-1' : ''}"
+              style="
+                width:18px;height:14px;border-radius:3px;border:none;cursor:pointer;
+                transition:background 0.1s,box-shadow 0.1s;
+                {stepStyle(track.sound, on, stepIdx)}
+              "
               aria-label="{track.sound} step {stepIdx + 1} {on ? 'on' : 'off'}"
             ></button>
           {/each}
         </div>
-        <!-- Remove track -->
         <button
           onclick={() => removeTrack(trackIdx)}
-          class="ml-1 text-gray-600 hover:text-red-400 text-xs"
+          style="
+            background:none;border:none;color:var(--text-dim);
+            cursor:pointer;font-size:10px;padding:0;transition:color 0.15s;
+          "
+          onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
+          onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
         >✕</button>
       </div>
     {/each}
   </div>
 
-  <!-- Add track -->
   {#if card.tracks.length < 6}
     <button
       onclick={addTrack}
-      class="self-start text-xs text-gray-500 hover:text-violet-400"
+      style="
+        align-self:flex-start;background:none;border:none;
+        color:var(--text-dim);font-family:monospace;font-size:9px;
+        cursor:pointer;padding:0;transition:color 0.15s;
+      "
+      onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}
+      onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
     >+ add track</button>
   {/if}
 
-  <!-- Visualization -->
   {#if card.tracks.length > 0}
     <DrumViz tracks={card.tracks} stepCount={card.stepCount} />
   {/if}
 
-  <!-- Modifiers -->
   {#if card.modifiers.length > 0}
-    <div class="flex flex-wrap gap-1.5">
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
       {#each card.modifiers as modifier, idx}
         <ModifierChip {modifier} onremove={() => removeModifier(idx)} />
       {/each}
     </div>
   {/if}
-
-  <!-- Code preview -->
-  <div class="rounded bg-gray-950 p-2 font-mono text-[10px] text-gray-500 leading-relaxed">
-    {code}
-  </div>
 </div>
