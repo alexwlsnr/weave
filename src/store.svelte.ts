@@ -30,12 +30,14 @@ export type Modifier = {
 
 export type PatternCard = DrumSequenceCard | MelodyCard
 
-// ---- Global state ----
-export const store = {
-  cards: $state<PatternCard[]>([]),
-  bpm: $state(120),
-  isPlaying: $state(false),
+// ---- Global state (class form required for $state in .svelte.ts) ----
+class AppStore {
+  cards = $state<PatternCard[]>([])
+  bpm = $state(120)
+  isPlaying = $state(false)
 }
+
+export const store = new AppStore()
 
 // ---- Helpers ----
 let _nextId = 1
