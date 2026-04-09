@@ -9,7 +9,8 @@
 
   let code = $derived(generateCardCode(card))
 
-  const INSTRUMENTS = ['piano', 'sawtooth', 'square', 'triangle', 'sine', 'gm_acoustic_guitar_nylon']
+  // Available synth voices (soundfonts not loaded; these are built-in WebAudio synths)
+  const INSTRUMENTS = ['triangle', 'sawtooth', 'square', 'sine', 'supersaw', 'pulse']
 
   function addNote(note: MelodyNote) {
     card.notes.push({ ...note, id: nextId() } as any)

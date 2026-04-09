@@ -23,7 +23,7 @@
       id: nextId(),
       type: 'melody',
       notes: [],
-      instrument: 'piano',
+      instrument: 'triangle',
       modifiers: [],
       muted: false,
     })
@@ -130,7 +130,7 @@
             { pitch: 67, start: 0.5,  duration: 0.25 },
             { pitch: 71, start: 0.75, duration: 0.25 },
           ],
-          instrument: 'piano',
+          instrument: 'triangle',
           modifiers: [],
           muted: false,
         })

@@ -1,4 +1,4 @@
-import { initStrudel, samples } from '@strudel/web'
+import { initStrudel, samples, evaluate as strudelEvaluate, hush as strudelHush } from '@strudel/web'
 
 let ready = false
 
@@ -6,7 +6,7 @@ export async function init(): Promise<void> {
   if (ready) return
   await initStrudel({
     prebake: async () => {
-      // Load the dirt-samples library (bd, sd, hh, cp, etc.)
+      // Load the TidalCycles dirt-samples (bd, sd, hh, cp, oh, etc.)
       await samples('github:tidalcycles/dirt-samples')
     },
   })
@@ -18,22 +18,9 @@ export function isReady(): boolean {
 }
 
 export function play(code: string): void {
-  ;(globalThis as any).evaluate(code)
+  strudelEvaluate(code)
 }
 
 export function stop(): void {
-  ;(globalThis as any).hush()
-}
-
-// Build a Pattern object from code string for queryArc() visualization only (no audio)
-export function buildPattern(code: string): any {
-  try {
-    // Use the globals that initStrudel() set up to evaluate a pattern expression
-    // eslint-disable-next-line no-new-func
-    return new Function(...Object.keys(globalThis as any), `return ${code}`)(
-      ...Object.values(globalThis as any)
-    )
-  } catch {
-    return null
-  }
+  strudelHush()
 }
