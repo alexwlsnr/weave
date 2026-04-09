@@ -8,10 +8,13 @@
   let presetName = $state('')
 
   onMount(async () => {
-    const [{ default: butterchurn }, { default: butterchurnPresets }] = await Promise.all([
+    // Vite wraps the UMD bundles, so .default may itself be { default: Class }
+    const [bcMod, bcpMod] = await Promise.all([
       import('butterchurn'),
       import('butterchurn-presets'),
     ])
+    const butterchurn = (bcMod.default as any)?.default ?? bcMod.default
+    const butterchurnPresets = (bcpMod.default as any)?.default ?? bcpMod.default
 
     const ctx = getAudioContext() as AudioContext
     if (!ctx || !canvas) return
