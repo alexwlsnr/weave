@@ -14,9 +14,9 @@
     <div class="flex flex-wrap gap-4">
       {#each store.cards as card (card.id)}
         {#if card.type === 'drum-sequence'}
-          <DrumSequenceCard {card} />
+          <DrumSequenceCard bind:card={card} />
         {:else if card.type === 'melody'}
-          <MelodyCard {card} />
+          <MelodyCard bind:card={card} />
         {/if}
       {/each}
     </div>
