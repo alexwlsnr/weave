@@ -24,8 +24,8 @@
 
   /* Text */
   --text-primary:   #e0c0ff;
-  --text-secondary: #7040c0;
-  --text-dim:       #3d1060;
+  --text-secondary: #9060e0;
+  --text-dim:       #6b21a8;
 }
 
 * { box-sizing: border-box; }
