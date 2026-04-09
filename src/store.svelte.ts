@@ -37,6 +37,7 @@ class AppStore {
   isPlaying = $state(false)
   codeStatus = $state<'synced' | 'pending' | 'error'>('synced')
   cyclePhase = $state(0)   // 0–1: current position in the playing cycle
+  vizOpen = $state(false)
 }
 
 export const store = new AppStore()

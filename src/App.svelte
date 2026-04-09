@@ -8,6 +8,7 @@
   import Palette from './components/Palette.svelte'
   import Canvas from './components/Canvas.svelte'
   import CodePanel from './components/CodePanel.svelte'
+  import ButterchurnViz from './viz/ButterchurnViz.svelte'
 
   let audioReady = $state(false)
   let loading = $state(false)
@@ -131,5 +132,8 @@
       <Canvas />
     </div>
     <CodePanel />
+    {#if store.vizOpen}
+      <ButterchurnViz />
+    {/if}
   {/if}
 </div>

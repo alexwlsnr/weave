@@ -89,7 +89,21 @@
     />
   </label>
 
-  <div style="margin-left:auto;font-family:monospace;font-size:13px;color:var(--text-dim)">
-    {store.cards.length} {store.cards.length === 1 ? 'card' : 'cards'}
+  <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+    <span style="font-family:monospace;font-size:13px;color:var(--text-dim)">
+      {store.cards.length} {store.cards.length === 1 ? 'card' : 'cards'}
+    </span>
+    <button
+      onclick={() => (store.vizOpen = !store.vizOpen)}
+      style="
+        background:transparent;
+        border:1px solid {store.vizOpen ? 'var(--accent)' : 'var(--border-active)'};
+        color:{store.vizOpen ? 'var(--accent-light)' : 'var(--text-dim)'};
+        padding:4px 12px;border-radius:3px;
+        font-family:monospace;font-size:12px;letter-spacing:1px;
+        cursor:pointer;transition:all 0.15s;
+        {store.vizOpen ? 'text-shadow:0 0 6px var(--accent);' : ''}
+      "
+    >◈ VIZ</button>
   </div>
 </header>
