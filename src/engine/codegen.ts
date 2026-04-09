@@ -22,7 +22,7 @@ function applyModifiers(base: string, modifiers: Modifier[]): string {
 }
 
 function generateDrumCode(card: DrumSequenceCard): string {
-  if (card.tracks.length === 0) return 'silence()'
+  if (card.tracks.length === 0) return 'silence'
 
   const trackCodes = card.tracks.map(track => {
     const pattern = track.steps.map(s => (s ? track.sound : '~')).join(' ')
@@ -38,7 +38,7 @@ function generateDrumCode(card: DrumSequenceCard): string {
 }
 
 function generateMelodyCode(card: MelodyCard): string {
-  if (card.notes.length === 0) return 'silence()'
+  if (card.notes.length === 0) return 'silence'
 
   // Sort notes by start time, convert pitch to note name
   const sorted = [...card.notes].sort((a, b) => a.start - b.start)
@@ -50,12 +50,12 @@ function generateMelodyCode(card: MelodyCard): string {
 export function generateCardCode(card: PatternCard): string {
   if (card.type === 'drum-sequence') return generateDrumCode(card)
   if (card.type === 'melody') return generateMelodyCode(card)
-  return 'silence()'
+  return 'silence'
 }
 
 export function generateProjectCode(cards: PatternCard[]): string {
   const active = cards.filter(c => !c.muted)
-  if (active.length === 0) return 'silence()'
+  if (active.length === 0) return 'silence'
   const parts = active.map(generateCardCode)
   if (parts.length === 1) return parts[0]
   return `stack(\n  ${parts.join(',\n  ')}\n)`
