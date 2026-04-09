@@ -1,4 +1,5 @@
-// Global reactive state — placeholder
+// Global reactive state for Weave
+
 export type DrumTrack = { sound: string; steps: boolean[] }
 
 export type DrumSequenceCard = {
@@ -29,6 +30,24 @@ export type Modifier = {
 
 export type PatternCard = DrumSequenceCard | MelodyCard
 
-export let cards = $state<PatternCard[]>([])
-export let bpm = $state(120)
-export let isPlaying = $state(false)
+// ---- Global state ----
+export const store = {
+  cards: $state<PatternCard[]>([]),
+  bpm: $state(120),
+  isPlaying: $state(false),
+}
+
+// ---- Helpers ----
+let _nextId = 1
+export function nextId(): string {
+  return String(_nextId++)
+}
+
+export function addCard(card: PatternCard) {
+  store.cards.push(card)
+}
+
+export function removeCard(id: string) {
+  const idx = store.cards.findIndex(c => c.id === id)
+  if (idx !== -1) store.cards.splice(idx, 1)
+}
