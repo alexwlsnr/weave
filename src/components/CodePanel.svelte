@@ -18,6 +18,8 @@
 
   // First non-empty line for the collapsed preview
   let previewLine = $derived(code.split('\n').find(l => l.trim()) ?? code)
+
+  let strudelLink = $derived('https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code))))
 </script>
 
 <div style="
@@ -83,7 +85,7 @@
         transition:color 0.3s;
       ">{code}</pre>
       <a
-        href="https://strudel.cc"
+        href={strudelLink}
         target="_blank"
         rel="noreferrer"
         style="
