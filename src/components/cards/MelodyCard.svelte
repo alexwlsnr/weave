@@ -1,3 +1,4 @@
+<!-- src/components/cards/MelodyCard.svelte -->
 <script lang="ts">
   import type { MelodyCard, MelodyNote } from '../../store.svelte'
   import { removeCard, nextId } from '../../store.svelte'
@@ -9,22 +10,12 @@
 
   let code = $derived(generateCardCode(card))
 
-  // Available synth voices (soundfonts not loaded; these are built-in WebAudio synths)
   const INSTRUMENTS = ['triangle', 'sawtooth', 'square', 'sine', 'supersaw', 'pulse']
 
-  function addNote(note: MelodyNote) {
-    card.notes.push({ ...note, id: nextId() } as any)
-  }
+  function addNote(note: MelodyNote) { card.notes.push(note) }
+  function removeNote(idx: number)   { card.notes.splice(idx, 1) }
+  function clearNotes()              { card.notes.splice(0, card.notes.length) }
 
-  function removeNote(idx: number) {
-    card.notes.splice(idx, 1)
-  }
-
-  function clearNotes() {
-    card.notes.splice(0, card.notes.length)
-  }
-
-  // Drag-over: accept modifier drops
   function onDragOver(e: DragEvent) {
     e.preventDefault()
     e.dataTransfer!.dropEffect = 'copy'
@@ -41,9 +32,7 @@
     } catch {}
   }
 
-  function removeModifier(idx: number) {
-    card.modifiers.splice(idx, 1)
-  }
+  function removeModifier(idx: number) { card.modifiers.splice(idx, 1) }
 </script>
 
 <div
@@ -51,14 +40,28 @@
   aria-label="Melody card"
   ondragover={onDragOver}
   ondrop={onDrop}
-  class="flex flex-col gap-3 rounded-xl border border-gray-700 bg-gray-900 p-4"
+  style="
+    display:flex;flex-direction:column;gap:12px;
+    border:1px solid #1e0848;border-radius:12px;
+    background:var(--surface-1);padding:14px;
+  "
 >
   <!-- Header -->
-  <div class="flex items-center gap-2">
-    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Melody</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="
+      width:7px;height:7px;border-radius:50%;
+      background:var(--accent);box-shadow:0 0 8px var(--accent-glow);flex-shrink:0;
+    "></div>
+    <span style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary)">
+      Melody
+    </span>
     <select
       bind:value={card.instrument}
-      class="ml-2 rounded border border-gray-700 bg-gray-800 px-2 py-0.5 text-xs text-white"
+      style="
+        background:var(--surface-2);border:1px solid var(--border-active);
+        color:var(--text-secondary);padding:2px 6px;border-radius:3px;
+        font-family:monospace;font-size:8px;cursor:pointer;outline:none;
+      "
     >
       {#each INSTRUMENTS as inst}
         <option value={inst}>{inst}</option>
@@ -66,41 +69,47 @@
     </select>
     <button
       onclick={() => (card.muted = !card.muted)}
-      class="ml-auto rounded px-2 py-0.5 text-xs {card.muted ? 'bg-gray-700 text-gray-400' : 'bg-violet-700 text-white'}"
-    >
-      {card.muted ? 'muted' : 'active'}
-    </button>
+      style="
+        margin-left:auto;
+        border:1px solid {card.muted ? 'var(--border-subtle)' : 'var(--border-active)'};
+        color:{card.muted ? 'var(--text-dim)' : 'var(--text-secondary)'};
+        background:transparent;border-radius:20px;
+        padding:2px 8px;font-family:monospace;font-size:8px;cursor:pointer;
+      "
+    >{card.muted ? 'muted' : 'active'}</button>
     <button
       onclick={() => removeCard(card.id)}
-      class="text-gray-500 hover:text-red-400 text-xs"
+      style="
+        background:none;border:none;color:var(--text-dim);
+        cursor:pointer;font-size:11px;padding:0;transition:color 0.15s;
+      "
+      onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
+      onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
     >✕</button>
   </div>
 
-  <!-- Piano roll (click to add/remove notes) -->
-  <div class="relative">
-    <MelodyViz notes={card.notes} onAddNote={addNote} onRemoveNote={removeNote} />
-    <p class="mt-1 text-[10px] text-gray-600">Click to add notes · Click existing notes to remove</p>
-  </div>
-
-  <!-- Note count + clear -->
-  <div class="flex items-center gap-2">
-    <span class="text-xs text-gray-500">{card.notes.length} notes</span>
+  <!-- Piano roll -->
+  <MelodyViz notes={card.notes} onAddNote={addNote} onRemoveNote={removeNote} />
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-family:monospace;font-size:9px;color:var(--text-dim)">{card.notes.length} notes</span>
     {#if card.notes.length > 0}
-      <button onclick={clearNotes} class="text-xs text-gray-600 hover:text-red-400">clear</button>
+      <button
+        onclick={clearNotes}
+        style="
+          background:none;border:none;color:var(--text-dim);
+          font-family:monospace;font-size:9px;cursor:pointer;padding:0;transition:color 0.15s;
+        "
+        onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--red)'}
+        onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
+      >clear</button>
     {/if}
   </div>
 
-  <!-- Modifiers -->
   {#if card.modifiers.length > 0}
-    <div class="flex flex-wrap gap-1.5">
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
       {#each card.modifiers as modifier, idx}
         <ModifierChip {modifier} onremove={() => removeModifier(idx)} />
       {/each}
     </div>
   {/if}
-
-  <!-- Code preview -->
-  <div class="rounded bg-gray-950 p-2 font-mono text-[10px] text-gray-500 leading-relaxed">
-    {code}
-  </div>
 </div>
