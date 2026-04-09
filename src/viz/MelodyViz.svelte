@@ -5,12 +5,14 @@
     notes,
     minPitch = 48,
     maxPitch = 84,
+    cyclePhase = 0,
     onAddNote,
     onRemoveNote,
   }: {
     notes: MelodyNote[]
     minPitch?: number
     maxPitch?: number
+    cyclePhase?: number
     onAddNote?: (note: MelodyNote) => void
     onRemoveNote?: (idx: number) => void
   } = $props()
@@ -53,15 +55,29 @@
       const w = Math.max(note.duration * W - 2, 6)
       const h = pitchH - 1
 
+      const isActive = cyclePhase >= note.start && cyclePhase < note.start + note.duration
+
       ctx.shadowColor = '#9333ea'
-      ctx.shadowBlur = 6
-      ctx.fillStyle = '#7c3aed'
+      ctx.shadowBlur = isActive ? 16 : 6
+      ctx.fillStyle = isActive ? '#c084fc' : '#7c3aed'
       ctx.beginPath(); ctx.roundRect(x + 1, y, w, h, 2); ctx.fill()
 
       ctx.shadowBlur = 0
-      ctx.fillStyle = '#a78bfa'
+      ctx.fillStyle = isActive ? '#e0c0ff' : '#a78bfa'
       ctx.beginPath(); ctx.roundRect(x + 1, y, 3, h, [2, 0, 0, 2]); ctx.fill()
     })
+
+    // Playhead
+    if (cyclePhase > 0) {
+      const px = noteX(cyclePhase)
+      ctx.shadowBlur = 0
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(px, 0)
+      ctx.lineTo(px, H)
+      ctx.stroke()
+    }
     ctx.shadowBlur = 0
   })
 

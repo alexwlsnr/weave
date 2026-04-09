@@ -2,9 +2,11 @@
   let {
     tracks,
     stepCount = 16,
+    cyclePhase = 0,
   }: {
     tracks: { sound: string; steps: boolean[] }[]
     stepCount: number
+    cyclePhase?: number
   } = $props()
 
   let canvas: HTMLCanvasElement
@@ -60,6 +62,17 @@
         ctx.fill()
       })
     })
+    // Playhead line
+    if (cyclePhase > 0) {
+      const px = LABEL_W + PADDING + cyclePhase * stepCount * (CELL_W + GAP)
+      ctx.shadowBlur = 0
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(px, 0)
+      ctx.lineTo(px, height)
+      ctx.stroke()
+    }
     ctx.shadowBlur = 0
   })
 </script>

@@ -1,7 +1,7 @@
 <!-- src/components/cards/MelodyCard.svelte -->
 <script lang="ts">
   import type { MelodyCard, MelodyNote } from '../../store.svelte'
-  import { removeCard, nextId } from '../../store.svelte'
+  import { removeCard, nextId, store } from '../../store.svelte'
   import { generateCardCode } from '../../engine/codegen'
   import MelodyViz from '../../viz/MelodyViz.svelte'
   import ModifierChip from '../modifiers/ModifierChip.svelte'
@@ -89,7 +89,7 @@
   </div>
 
   <!-- Piano roll -->
-  <MelodyViz notes={card.notes} onAddNote={addNote} onRemoveNote={removeNote} />
+  <MelodyViz notes={card.notes} onAddNote={addNote} onRemoveNote={removeNote} cyclePhase={store.cyclePhase} />
   <div style="display:flex;align-items:center;gap:8px">
     <span style="font-family:monospace;font-size:12px;color:var(--text-dim)">{card.notes.length} notes</span>
     {#if card.notes.length > 0}

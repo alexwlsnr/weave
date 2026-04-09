@@ -1,7 +1,7 @@
 <!-- src/components/cards/DrumSequenceCard.svelte -->
 <script lang="ts">
   import type { DrumSequenceCard } from '../../store.svelte'
-  import { removeCard, nextId } from '../../store.svelte'
+  import { removeCard, nextId, store } from '../../store.svelte'
   import { generateCardCode } from '../../engine/codegen'
   import DrumViz from '../../viz/DrumViz.svelte'
   import ModifierChip from '../modifiers/ModifierChip.svelte'
@@ -9,6 +9,7 @@
   let { card }: { card: DrumSequenceCard } = $props()
 
   let code = $derived(generateCardCode(card))
+  let activeStep = $derived(store.isPlaying ? Math.floor(store.cyclePhase * card.stepCount) : -1)
 
   const STEP_COLOR: Record<string, { on: string; glow: string }> = {
     bd: { on: 'var(--accent-light)', glow: 'var(--accent-glow)' },
@@ -18,12 +19,21 @@
     cp: { on: 'var(--red)',          glow: '#dc2626' },
   }
 
-  function stepStyle(sound: string, on: boolean, stepIdx: number): string {
+  function stepStyle(sound: string, on: boolean, stepIdx: number, isActive: boolean): string {
     const c = STEP_COLOR[sound] ?? STEP_COLOR.bd
     const marginLeft = (stepIdx % 4 === 0 && stepIdx > 0) ? 'margin-left:4px;' : ''
-    if (on) return `${marginLeft}background:${c.on};box-shadow:0 0 7px ${c.glow};`
+    const activeRing = isActive ? 'outline:2px solid rgba(255,255,255,0.35);outline-offset:-2px;' : ''
+    if (on) {
+      const glow = isActive
+        ? `box-shadow:0 0 12px ${c.glow},0 0 0 2px rgba(255,255,255,0.4);`
+        : `box-shadow:0 0 7px ${c.glow};`
+      return `${marginLeft}background:${c.on};${glow}`
+    }
     const isQuarter = stepIdx % 4 === 0
-    return `${marginLeft}background:${isQuarter ? '#1c0d48' : '#160840'};`
+    const bg = isActive
+      ? 'background:rgba(255,255,255,0.08);'
+      : `background:${isQuarter ? '#1c0d48' : '#160840'};`
+    return `${marginLeft}${bg}${activeRing}`
   }
 
   function toggleStep(trackIdx: number, stepIdx: number) {
@@ -117,7 +127,7 @@
               style="
                 width:22px;height:18px;border-radius:3px;border:none;cursor:pointer;
                 transition:background 0.1s,box-shadow 0.1s;
-                {stepStyle(track.sound, on, stepIdx)}
+                {stepStyle(track.sound, on, stepIdx, stepIdx === activeStep)}
               "
               aria-label="{track.sound} step {stepIdx + 1} {on ? 'on' : 'off'}"
             ></button>
@@ -150,7 +160,7 @@
   {/if}
 
   {#if card.tracks.length > 0}
-    <DrumViz tracks={card.tracks} stepCount={card.stepCount} />
+    <DrumViz tracks={card.tracks} stepCount={card.stepCount} cyclePhase={store.cyclePhase} />
   {/if}
 
   {#if card.modifiers.length > 0}

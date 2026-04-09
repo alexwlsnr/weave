@@ -45,6 +45,45 @@
       }
     }, 400)
   })
+
+  // Playhead animation: update cyclePhase 60fps while playing
+  let animFrame = 0
+  let playStartAudioTime = 0
+
+  $effect(() => {
+    if (!store.isPlaying) {
+      cancelAnimationFrame(animFrame)
+      store.cyclePhase = 0
+      return
+    }
+
+    // Record audio time at start of playback
+    const ctx = (globalThis as any).getAudioContext?.() as AudioContext | undefined
+    playStartAudioTime = ctx?.currentTime ?? 0
+
+    function tick() {
+      // Prefer Strudel's own scheduler clock (perfectly synced to audio)
+      const schedulerNow: number | undefined = (globalThis as any).scheduler?.now?.()
+      if (typeof schedulerNow === 'number') {
+        store.cyclePhase = ((schedulerNow % 1) + 1) % 1
+      } else {
+        // Fallback: compute from elapsed audio time + BPM
+        const c = (globalThis as any).getAudioContext?.() as AudioContext | undefined
+        if (c) {
+          const elapsed = c.currentTime - playStartAudioTime
+          const cps = store.bpm / 60 / 4
+          store.cyclePhase = ((elapsed * cps) % 1 + 1) % 1
+        }
+      }
+      animFrame = requestAnimationFrame(tick)
+    }
+    tick()
+
+    return () => {
+      cancelAnimationFrame(animFrame)
+      store.cyclePhase = 0
+    }
+  })
 </script>
 
 <div style="display:flex;flex-direction:column;height:100vh;background:var(--bg);overflow:hidden">

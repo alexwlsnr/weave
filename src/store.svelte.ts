@@ -36,6 +36,7 @@ class AppStore {
   bpm = $state(120)
   isPlaying = $state(false)
   codeStatus = $state<'synced' | 'pending' | 'error'>('synced')
+  cyclePhase = $state(0)   // 0–1: current position in the playing cycle
 }
 
 export const store = new AppStore()
