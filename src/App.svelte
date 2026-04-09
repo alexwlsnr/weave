@@ -1,6 +1,9 @@
+<!-- src/App.svelte -->
 <script lang="ts">
   import './app.css'
-  import { init } from './engine/strudel'
+  import { init, play } from './engine/strudel'
+  import { generateProjectCode } from './engine/codegen'
+  import { store } from './store.svelte'
   import TransportBar from './components/TransportBar.svelte'
   import Palette from './components/Palette.svelte'
   import Canvas from './components/Canvas.svelte'
@@ -8,7 +11,7 @@
 
   let audioReady = $state(false)
   let loading = $state(false)
-  let error = $state('')
+  let initError = $state('')
 
   async function startAudio() {
     loading = true
@@ -16,33 +19,75 @@
       await init()
       audioReady = true
     } catch (e) {
-      error = e instanceof Error ? e.message : 'Failed to initialize audio'
+      initError = e instanceof Error ? e.message : 'Failed to initialize audio'
     } finally {
       loading = false
     }
   }
+
+  // Live-update: re-evaluate 400ms after last card change, while playing
+  let lastEvaluatedCode = ''
+  let debounceTimer: ReturnType<typeof setTimeout>
+
+  $effect(() => {
+    const code = generateProjectCode(store.cards)
+    if (code === lastEvaluatedCode) return
+    store.codeStatus = 'pending'
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => {
+      if (!store.isPlaying) return
+      try {
+        play(code)
+        lastEvaluatedCode = code
+        store.codeStatus = 'synced'
+      } catch {
+        store.codeStatus = 'error'
+      }
+    }, 400)
+  })
 </script>
 
-<div class="flex h-screen flex-col bg-gray-950 text-white overflow-hidden">
+<div style="display:flex;flex-direction:column;height:100vh;background:var(--bg);overflow:hidden">
   {#if !audioReady}
-    <!-- Click-to-start overlay (required for Web Audio API) -->
-    <div class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-950">
-      <h1 class="text-4xl font-bold tracking-tight text-white mb-2">Weave</h1>
-      <p class="text-gray-400 mb-8 text-sm">A graphical pattern composer</p>
+    <div style="
+      position:fixed;inset:0;z-index:50;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:var(--bg);gap:12px
+    ">
+      <div style="font-family:monospace;font-size:32px;font-weight:700;color:var(--accent);
+                  text-shadow:0 0 24px var(--accent-glow),0 0 48px var(--accent);
+                  letter-spacing:6px">WEAVE</div>
+      <div style="font-size:12px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px">
+        graphical pattern composer
+      </div>
       <button
         onclick={startAudio}
         disabled={loading}
-        class="px-8 py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 rounded-lg font-medium text-white transition-colors"
+        style="
+          background:transparent;
+          border:1px solid var(--accent);
+          color:var(--accent-light);
+          padding:10px 32px;
+          border-radius:4px;
+          font-family:monospace;
+          font-size:13px;
+          letter-spacing:2px;
+          cursor:pointer;
+          text-shadow:0 0 8px var(--accent);
+          transition:box-shadow 0.2s;
+        "
+        onmouseenter={(e) => (e.currentTarget as HTMLElement).style.boxShadow = '0 0 16px var(--accent)'}
+        onmouseleave={(e) => (e.currentTarget as HTMLElement).style.boxShadow = 'none'}
       >
-        {loading ? 'Starting…' : 'Click to start audio'}
+        {loading ? 'LOADING...' : 'CLICK TO START'}
       </button>
-      {#if error}
-        <p class="mt-4 text-red-400 text-sm">{error}</p>
+      {#if initError}
+        <div style="color:var(--red);font-size:11px;margin-top:8px">{initError}</div>
       {/if}
     </div>
   {:else}
     <TransportBar />
-    <div class="flex flex-1 overflow-hidden">
+    <div style="display:flex;flex:1;overflow:hidden">
       <Palette />
       <Canvas />
     </div>

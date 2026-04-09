@@ -35,6 +35,7 @@ class AppStore {
   cards = $state<PatternCard[]>([])
   bpm = $state(120)
   isPlaying = $state(false)
+  codeStatus = $state<'synced' | 'pending' | 'error'>('synced')
 }
 
 export const store = new AppStore()
