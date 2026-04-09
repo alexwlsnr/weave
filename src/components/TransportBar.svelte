@@ -7,47 +7,70 @@
     const code = generateProjectCode(store.cards)
     play(code)
     store.isPlaying = true
+    store.codeStatus = 'synced'
   }
 
   function handleStop() {
     stop()
     store.isPlaying = false
+    store.codeStatus = 'synced'
   }
 
   function handleBpmChange(e: Event) {
     const val = parseInt((e.target as HTMLInputElement).value)
-    if (!isNaN(val) && val > 0 && val <= 300) {
+    if (!isNaN(val) && val >= 40 && val <= 300) {
       store.bpm = val
-      // Re-evaluate if playing to apply new BPM via setcps
       if (store.isPlaying) {
-        const cps = store.bpm / 60 / 4
-        ;(globalThis as any).setcps?.(cps)
+        ;(globalThis as any).setcps?.(val / 60 / 4)
       }
     }
   }
 </script>
 
-<header class="flex items-center gap-4 border-b border-gray-800 bg-gray-900 px-4 py-2">
-  <span class="text-sm font-bold tracking-widest text-violet-400 uppercase">Weave</span>
+<header style="
+  display:flex;align-items:center;gap:16px;
+  padding:0 16px;height:44px;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border-subtle);
+  flex-shrink:0;
+">
+  <span style="
+    font-family:monospace;font-size:13px;font-weight:700;
+    letter-spacing:4px;color:var(--accent);
+    text-shadow:0 0 12px var(--accent-glow);
+  ">WEAVE</span>
 
-  <div class="flex items-center gap-2">
+  <div style="display:flex;gap:6px">
     <button
       onclick={handlePlay}
       disabled={store.isPlaying}
-      class="flex items-center gap-1.5 rounded bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500 disabled:opacity-40 transition-colors"
-    >
-      ▶ Play
-    </button>
+      style="
+        background:transparent;
+        border:1px solid {store.isPlaying ? 'var(--border-subtle)' : 'var(--accent)'};
+        color:{store.isPlaying ? 'var(--text-dim)' : 'var(--accent-light)'};
+        padding:4px 12px;border-radius:3px;
+        font-family:monospace;font-size:11px;letter-spacing:1px;
+        cursor:{store.isPlaying ? 'default' : 'pointer'};
+        text-shadow:{store.isPlaying ? 'none' : '0 0 6px var(--accent)'};
+        transition:all 0.15s;
+      "
+    >▶ PLAY</button>
     <button
       onclick={handleStop}
       disabled={!store.isPlaying}
-      class="flex items-center gap-1.5 rounded bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600 disabled:opacity-40 transition-colors"
-    >
-      ■ Stop
-    </button>
+      style="
+        background:transparent;
+        border:1px solid {store.isPlaying ? 'var(--border-active)' : 'var(--border-subtle)'};
+        color:{store.isPlaying ? 'var(--text-secondary)' : 'var(--text-dim)'};
+        padding:4px 12px;border-radius:3px;
+        font-family:monospace;font-size:11px;letter-spacing:1px;
+        cursor:{store.isPlaying ? 'pointer' : 'default'};
+        transition:all 0.15s;
+      "
+    >■ STOP</button>
   </div>
 
-  <label class="flex items-center gap-2 text-sm text-gray-400">
+  <label style="display:flex;align-items:center;gap:8px;font-family:monospace;font-size:11px;color:var(--text-dim)">
     BPM
     <input
       type="number"
@@ -55,11 +78,18 @@
       max="300"
       value={store.bpm}
       oninput={handleBpmChange}
-      class="w-16 rounded border border-gray-700 bg-gray-800 px-2 py-1 text-center text-white focus:border-violet-500 focus:outline-none"
+      style="
+        width:52px;background:var(--surface-1);
+        border:1px solid var(--border-active);
+        color:var(--text-secondary);
+        padding:3px 6px;border-radius:3px;
+        font-family:monospace;font-size:11px;
+        text-align:center;outline:none;
+      "
     />
   </label>
 
-  <div class="ml-auto flex items-center gap-2 text-xs text-gray-500">
+  <div style="margin-left:auto;font-family:monospace;font-size:10px;color:var(--text-dim)">
     {store.cards.length} {store.cards.length === 1 ? 'card' : 'cards'}
   </div>
 </header>
