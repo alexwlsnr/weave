@@ -1,47 +1,76 @@
-# Svelte + TS + Vite
+# Weave
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+A graphical pattern composer built on top of [Strudel](https://strudel.cc). Compose music by clicking a drum grid and sketching on a piano roll — the underlying Strudel code generates live and can be copied straight into the Strudel REPL.
 
-## Recommended IDE Setup
+**Live demo:** https://alexwlsnr.github.io/weave/
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+---
 
-## Need an official Svelte framework?
+## What it does
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+- **Drum Sequence cards** — 16-step grid per track (bd, sd, hh, oh, cp). Click steps to toggle. Steps glow in their track colour when active; quarter-beat gaps keep the grid readable.
+- **Melody cards** — mini piano roll. Click to place or remove notes. Instrument selector (triangle, sawtooth, square, sine, supersaw, pulse).
+- **Modifier chips** — drag fast, slow, rev, lpf, delay, or reverb from the sidebar onto any card. Each chip has an inline slider for its parameter.
+- **Live playhead** — the active drum step and piano roll position highlight in real time while playing.
+- **Live code updates** — changes to any card are debounced (400ms) and re-evaluated mid-loop without stopping playback. The code bar at the bottom shows sync state: violet = in sync, amber = pending, red = error.
+- **Strudel REPL link** — the generated code is base64-encoded into the URL so "try at strudel.cc" opens your exact pattern in the Strudel playground.
+- **Butterchurn visualiser** — fullscreen WebGL Milkdrop-style visualiser driven by the live audio output. Toggle with the VIZ button. Auto-cycles through 100 presets every 30 seconds with a blend transition.
 
-## Technical considerations
+---
 
-**Why use this over SvelteKit?**
+## Tech stack
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+| Layer | Choice |
+|-------|--------|
+| Framework | Svelte 5 (runes) + Vite |
+| Package manager | Bun |
+| Audio engine | [@strudel/web](https://github.com/tidalcycles/strudel) |
+| Visualisation | Custom Canvas2D + [Butterchurn](https://github.com/jberg/butterchurn) (WebGL) |
+| Styling | Tailwind CSS v4 + CSS custom properties |
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+---
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+## Running locally
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+Requires [Bun](https://bun.sh).
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```bash
+git clone https://github.com/alexwlsnr/weave.git
+cd weave
+bun install
+bun dev
 ```
+
+The first run fetches Strudel's dirt-samples from GitHub (~100MB). They are cached by the browser after the first load.
+
+---
+
+## How patterns are generated
+
+Each card produces a Strudel expression. Multiple cards are wrapped in `stack()`. For example, a drum card with bd on beats 1 and 3 and a "fast ×2" modifier generates:
+
+```javascript
+sound("bd ~ ~ ~ bd ~ ~ ~ bd ~ ~ ~ bd ~ ~ ~").fast(2)
+```
+
+The full generated code is shown (and copyable) in the code bar at the bottom of the app.
+
+---
+
+## Licence
+
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
+
+Weave depends on [Strudel](https://github.com/tidalcycles/strudel), which is AGPL-3.0. Under the AGPL, anyone who deploys a modified version of this software over a network must publish their source code. This repository is that source.
+
+See [LICENSE](./LICENSE) for the full licence text.
+
+In brief: you can use, fork, and modify Weave freely. If you deploy a modified version publicly, you must publish your source. Commercial use is permitted.
+
+---
+
+## Credits
+
+- [Strudel](https://strudel.cc) by the TidalCycles community — the live coding engine powering all audio
+- [Butterchurn](https://github.com/jberg/butterchurn) by Jordan Berg — WebGL Milkdrop visualiser
+- [Milkdrop presets](https://github.com/jberg/butterchurn-presets) — community-created visualiser presets
