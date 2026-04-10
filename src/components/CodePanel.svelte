@@ -95,6 +95,17 @@
         "
         onclick={(e) => e.stopPropagation()}
       >try at strudel.cc ↗</a>
+      <a
+        href="https://github.com/alexwlsnr/weave"
+        target="_blank"
+        rel="noreferrer"
+        style="
+          display:inline-block;margin-top:8px;margin-left:16px;
+          font-family:monospace;font-size:12px;
+          color:var(--text-dim);text-decoration:none;letter-spacing:1px;
+        "
+        onclick={(e) => e.stopPropagation()}
+      >source ↗</a>
     </div>
   {/if}
 </div>
