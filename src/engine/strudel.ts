@@ -12,16 +12,17 @@ export async function init(): Promise<void> {
     },
   })
 
-  // Tap a master AnalyserNode between destinationGain and context.destination
+  // Tap a master AnalyserNode between destinationGain and context.destination.
+  // getSuperdoughAudioController() returns a q2 instance; destinationGain is on q2.output (wS class).
   try {
     const ctx = getAudioContext() as AudioContext
-    const controller = getSuperdoughAudioController() as any
-    if (ctx && controller?.destinationGain) {
+    const output = (getSuperdoughAudioController() as any)?.output
+    if (ctx && output?.destinationGain) {
       analyserNode = ctx.createAnalyser()
       analyserNode.fftSize = 2048
       analyserNode.smoothingTimeConstant = 0.8
-      controller.destinationGain.disconnect()
-      controller.destinationGain.connect(analyserNode)
+      output.destinationGain.disconnect()
+      output.destinationGain.connect(analyserNode)
       analyserNode.connect(ctx.destination)
     }
   } catch {
