@@ -1,8 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { analyserNode } from '../engine/strudel'
+  import { analyserNode, play, stop } from '../engine/strudel'
   import { store } from '../store.svelte'
+  import { generateProjectCode } from '../engine/codegen'
   import { getAudioContext } from '@strudel/web'
+
+  function togglePlay() {
+    if (store.isPlaying) {
+      stop()
+      store.isPlaying = false
+      store.codeStatus = 'synced'
+    } else {
+      play(generateProjectCode(store.cards))
+      store.isPlaying = true
+      store.codeStatus = 'synced'
+    }
+  }
 
   let canvas: HTMLCanvasElement
   let presetName = $state('')
@@ -119,6 +132,34 @@
       font-family:monospace;font-size:13px;cursor:pointer;
     ">✕</button>
   </div>
+
+  <!-- Large central play/pause button -->
+  <button
+    onclick={togglePlay}
+    style="
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:88px;height:88px;
+      border-radius:50%;
+      background:rgba(5,5,16,0.6);
+      border:2px solid rgba(192,132,252,0.5);
+      color:#c084fc;
+      font-size:32px;
+      line-height:1;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s;
+      text-shadow:0 0 14px #c084fc;
+      box-shadow:0 0 20px rgba(124,58,237,0.3), inset 0 0 20px rgba(124,58,237,0.1);
+      backdrop-filter:blur(4px);
+      opacity:0.7;
+    "
+    onmouseenter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(192,132,252,0.9)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px rgba(124,58,237,0.6), inset 0 0 20px rgba(124,58,237,0.2)' }}
+    onmouseleave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.7'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(192,132,252,0.5)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(124,58,237,0.3), inset 0 0 20px rgba(124,58,237,0.1)' }}
+  >
+    {store.isPlaying ? '■' : '▶'}
+  </button>
 
   <!-- Bottom hint -->
   <div style="

@@ -70,6 +70,22 @@
         onmouseenter={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)'}
         onmouseleave={(e) => (e.currentTarget as HTMLElement).style.color = 'var(--text-dim)'}
       >copy</button>
+      <a
+        href={strudelLink}
+        target="_blank"
+        rel="noreferrer"
+        onclick={(e) => e.stopPropagation()}
+        style="
+          font-family:monospace;font-size:12px;
+          color:var(--accent-light);text-decoration:none;
+          flex-shrink:0;letter-spacing:0.5px;
+          border:1px solid rgba(192,132,252,0.3);
+          padding:2px 8px;border-radius:3px;
+          transition:all 0.15s;
+        "
+        onmouseenter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(192,132,252,0.8)'; (e.currentTarget as HTMLElement).style.color = '#e0c0ff' }}
+        onmouseleave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(192,132,252,0.3)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent-light)' }}
+      >strudel.cc ↗</a>
       <span style="font-family:monospace;font-size:12px;color:var(--text-dim);flex-shrink:0">
         {expanded ? '▼' : '▲'}
       </span>
@@ -85,22 +101,11 @@
         transition:color 0.3s;
       ">{code}</pre>
       <a
-        href={strudelLink}
-        target="_blank"
-        rel="noreferrer"
-        style="
-          display:inline-block;margin-top:8px;
-          font-family:monospace;font-size:12px;
-          color:var(--text-dim);text-decoration:none;letter-spacing:1px;
-        "
-        onclick={(e) => e.stopPropagation()}
-      >try at strudel.cc ↗</a>
-      <a
         href="https://github.com/alexwlsnr/weave"
         target="_blank"
         rel="noreferrer"
         style="
-          display:inline-block;margin-top:8px;margin-left:16px;
+          display:inline-block;margin-top:8px;
           font-family:monospace;font-size:12px;
           color:var(--text-dim);text-decoration:none;letter-spacing:1px;
         "
